@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'layout.html' %}
+<head>
+    <meta charset="UTF-8">
+    <title>Judul</title>
+</head>
+<body>
+    {% block body %}
+        <div class="jumbotron text-center">
+                <div class="container">
+                  <h1 class="display-3">Menambahkan</h1>
+                  <p>Volume baru.</p>
+                </div>
+              </div>
+          <form action = "http://localhost:8080/AddVolume" method = post>
+         <fieldset>
+            {{ form.hidden_tag() }}
+
+            <div style = font-size:20px>
+               {{ form.poolID.label }}<br>
+               {{ form.poolID }}
+               <br>
+
+               {{ form.capacity.label }}<br>
+               {{ form.capacity }}
+               <br>
+
+              {{ form.submit }}
+            </div>
+
+         </fieldset>
+      </form>
+    {% endblock %}
+</body>
+</html>

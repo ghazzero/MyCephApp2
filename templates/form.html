@@ -1,0 +1,40 @@
+<!doctype html>
+
+{% extends 'layout.html' %}
+
+{% block body %}
+ <div class="jumbotron text-center">
+        <div class="container">
+          <h1 class="display-3">Gunakan Ceph</h1>
+          <p>Untuk membuat user.</p>
+        </div>
+      </div>
+
+      <form action = "http://localhost:8080/AddUser/form" method = post>
+         <fieldset>
+            {{ form.hidden_tag() }}
+
+            <div style = font-size:20px>
+               {{ form.userID.label }}<br>
+               {{ form.userID }}
+               <br>
+
+               {{ form.OSDcap.label }}<br>
+               {{ form.OSDcap }}
+               <br>
+
+               {{ form.MONcap.label }}<br>
+               {{ form.MONcap }}
+               <br>
+
+                {{ form.MDScap.label }}<br>
+               {{ form.MDScap }}
+               <br>
+              {{ form.submit }}
+            </div>
+
+         </fieldset>
+      </form>
+
+{% endblock %}
+

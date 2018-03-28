@@ -1,0 +1,32 @@
+<!doctype html>
+
+{% extends 'layout.html' %}
+
+{% block body %}
+<body>
+ <div class="jumbotron text-center">
+        <div class="container">
+          <h1 class="display-3">Gunakan Ceph</h1>
+          <p>Untuk membuat user.</p>
+        </div>
+      </div>
+<p id="test"></p>
+
+<script>
+var request = new XMLHttpRequest();
+request.open('GET', '10.10.6.1:5000/api/v0.1/health.json', true);
+request.onload = function () {
+	// begin accessing JSON data here
+		for (var i = 0; i < data.length; i++) {
+		console.log(status[i]);
+	}
+}
+request.send();
+
+</script>
+</body>
+
+
+
+{% endblock %}
+
