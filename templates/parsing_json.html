@@ -12,39 +12,27 @@
 
 <div id="root"></div>
 <script>
-const app = document.getElementById('root');
-
-const container = document.createElement('div');
-container.setAttribute('class', 'container');
-
-app.appendChild(container);
-
-var request = new XMLHttpRequest();
-request.open('GET', 'http://10.10.6.1:5000/api/v0.1/health.json', true);
-request.onload = function () {
-
-  // Begin accessing JSON data here
-  var data = JSON.parse(this.response);
-  if (request.status >= 200 && request.status < 400) {
-
-      const card = document.createElement('div');
-
-      const h1 = document.createElement('h1');
-      h1.textContent = data.status;
-
-      container.appendChild(card);
-      card.appendChild(h1);
-
-  } else {
-    const errorMessage = document.createElement('marquee');
-    errorMessage.textContent = `Gah, it's not working!`;
-    app.appendChild(errorMessage);
-  }
-}
-
-request.send();
+    var request = new XMLHttpRequest();
+    request.open('GET', 'http://10.10.6.1:6969/api/v0.1/auth/list.json', true);
+    request.onload = function () {
+      var data = JSON.parse(this.response);
+      if (request.status >= 200 && request.status < 400) {
+      for (var i = 0; i < data.length; i++)
+       {
+       document.getElementById("user").innerHTML = data.output.auth_dump[i].entity;
+       }
+      } else {
+        const errorMessage = document.createElement('marquee');
+        errorMessage.textContent = `Gah, it's not working!`;
+        app.appendChild(errorMessage);
+      }
+    }
+    request.send();
 </script>
 
+<div id="user">
+
+</div>
 {%  endblock %}
 </body>
 </html>
