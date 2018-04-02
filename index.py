@@ -1,10 +1,12 @@
-from flask import Flask, request, render_template, flash
+from flask import Flask, request, render_template, flash, json
 from data import Users
 from flask_wtf import Form
 from wtforms import validators,StringField, IntegerField,SubmitField
-
+from flask_cors import CORS,cross_origin
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.secret_key = 'development key'
 users = Users()
 
@@ -57,5 +59,9 @@ def addvolume():
 def linkuservolume():
     return render_template('home.html')
 
+@app.route('/latihanjson', methods=['GET'])
+def latihanjson():
+    return render_template('parsing_json.html')
+
 if __name__=='__main__':
-    app.run(port=8080,debug=True)
+    app.run(host='0.0.0.0',port=8080,debug=True)
