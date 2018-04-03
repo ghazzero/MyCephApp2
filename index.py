@@ -1,5 +1,6 @@
-from flask import Flask, request, render_template, flash, json
-from data import Users
+from flask import Flask, request, render_template, flash
+import requests
+import json
 from flask_wtf import Form
 from wtforms import validators,StringField, IntegerField,SubmitField
 from flask_cors import CORS,cross_origin
@@ -8,7 +9,6 @@ app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.secret_key = 'development key'
-users = Users()
 
 class BuatUser(Form):
     userID = StringField('userID', validators=[validators.length(min=4,max=25)])
@@ -24,13 +24,19 @@ class BuatVolume(Form):
 
 @app.route('/')
 def index():
-    return render_template('home.html')
+    r = requests.get('http://10.10.6.1:6969/api/v0.1/health.json')
+    return render_template('home.html',data =json.loads(r.text))
 
 @app.route('/AddUser')
 def adduser():
-    return render_template('adduser.html', users = users)
+    r = requests.get('http://10.10.6.1:6969/api/v0.1/auth/list.json')
+    return render_template('adduser.html', data =json.loads(r.text))
 
-@app.route('/AddUser/form', methods = ['GET','POST'])
+@app.route('/AddUser/DelUser/<string:entity>')
+def deluser(entity):
+    return (entity)
+
+@app.route('/AddUser/form', methods = ['GET','PUT'])
 def adduserform():
     form = BuatUser(request.form)
     if request.method == 'POST':
@@ -61,7 +67,8 @@ def linkuservolume():
 
 @app.route('/latihanjson', methods=['GET'])
 def latihanjson():
-    return render_template('parsing_json.html')
+    r = requests.get('http://10.10.6.1:6969/api/v0.1/auth/list.json')
+    return render_template('parsing_json.html',data =json.loads(r.text))
 
 if __name__=='__main__':
     app.run(host='0.0.0.0',port=8080,debug=True)
