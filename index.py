@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, flash
+from flask import Flask, request, render_template, flash, jsonify
 import requests
 import json
 from flask_wtf import Form
@@ -32,11 +32,14 @@ def adduser():
     r = requests.get('http://10.10.6.1:6969/api/v0.1/auth/list.json')
     return render_template('adduser.html', data =json.loads(r.text))
 
-@app.route('/AddUser/DelUser/<string:entity>')
+@app.route('/AddUser/DelUser/<string:entity>', methods = ['GET','PUT'])
 def deluser(entity):
-    return (entity)
+    data = [{"entity":entity}]
+    json_data = json.dumps(data)
+    r = requests.put('http://10.10.6.1/api/v0.1/auth/del', json_data)
+    return render_template('success.html')
 
-@app.route('/AddUser/form', methods = ['GET','PUT'])
+@app.route('/AddUser/form', methods = ['PUT'])
 def adduserform():
     form = BuatUser(request.form)
     if request.method == 'POST':
