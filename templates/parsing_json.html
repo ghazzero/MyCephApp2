@@ -11,12 +11,7 @@
 {%  block body %}
 
 <div id="user">
-    {{data.status}}
-    <table>
-        {% for datum in data.output.auth_dump %}
-        <tr><td>{{ datum.entity }}<td><tr>
-        {% endfor %}
-    </table>
+       {{ pools }}
 </div>
 {%  endblock %}
 </body>

@@ -52,20 +52,24 @@
                   <th>OSD</th>
                   <th>MON</th>
                   <th>MDS</th>
+                    <th>EDIT</th>
                   <th>DEL</th>
                 </tr>
               </thead>
                 <tbody>
                 {% for datum in data.output.auth_dump %}
-                {% if datum.entity[:6]=="client" %}
+                {% if datum.entity[:6]=="client"%}
+                {% if (datum.entity !="client.admin") and datum.entity[:16] !="client.bootstrap" %}
                 <tr>
                     <td id="user">{{datum.entity}}</td>
                     <td>{{datum.key}}</td>
                     <td>{{datum.caps.osd}}</td>
                     <td>{{datum.caps.mon}}</td>
                     <td>{{datum.caps.mds}}</td>
+                    <td> <a href="/AddUser/EditUser/{{datum.entity}}"> Edit </a></td>
                     <td> <a href="/AddUser/DelUser/{{datum.entity}}"> Delete </a></td>
                 </tr>
+                {% endif %}
                 {% endif %}
                 {% endfor %}
         </tbody>

@@ -6,17 +6,15 @@
  <div class="jumbotron text-center">
         <div class="container">
           <h1 class="display-3">Gunakan Ceph</h1>
-          <p>Untuk membuat user.</p>
+          <p>Untuk mengedit kapabilitas user.</p>
         </div>
       </div>
 
-      <form action = "http://localhost:8000/AddUser/form" method = post>
+      <form action = "http://localhost:8000/AddUser/EditUser/{{entity}}" method = post>
          <fieldset>
             {{ form.hidden_tag() }}
 
             <div style = font-size:20px>
-               {{ form.userID.label }}<br>
-               {{ form.userID }}
                <br>
                Kapabilitas<br>
                OSD<br>
@@ -33,7 +31,7 @@
                {{ form.MONw.label }}
                {{ form.MONx}}
                {{ form.MONx.label }}<br>
-               MDS<br> 
+               MDS<br>
                {{ form.MDSr}}
                {{ form.MDSr.label }}
                {{ form.MDSw}}
