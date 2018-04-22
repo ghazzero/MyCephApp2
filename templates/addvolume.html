@@ -66,7 +66,9 @@
             <tr>
                 <td id="user">{{datum.pool_id}}</td>
                 <td>{{datum.pool_name}}</td>
-                <td>{{datum.recovery_rate}}</td>
+                {% for dadatum in  images%}
+                <td>{{dadatum}}</td>
+                {% endfor %}
                 <td>{{datum.client_io_rate}}</td>
                 <td>{{datum.recovery}}</td>
                 <td> <a href="/VolumeList{{data.pool_name}}"> Edit </a></td>
