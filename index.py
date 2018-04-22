@@ -3,7 +3,10 @@ import requests
 import json
 from flask_wtf import Form
 from wtforms import validators,StringField, IntegerField,SubmitField, BooleanField
-from flask_cors import CORS,cross_origin
+from flask_cors import CORS
+from blockdevice import PilihCapsMon, PilihCapsOsd, PilihCapsMds
+#from blockdevice import newImage, newPool, list_image
+
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"10.10.6.251:5000/api/v0.1/*": {"Access-Control-Allow-Origin": "*"}})
@@ -17,60 +20,6 @@ headers = {'Access-Control-Max-Age' : '3600',
            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS,PUT',
            'Access-Control-Allow-Headers': 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range',
            'Access-Control-Expose-Headers': 'Content-Length'}
-
-def PilihCapsMon(r,w,x):
-    if r == True and w ==True and x == True:
-        return "mon", "allow rwx"
-    elif r == True and w == True and x == False:
-        return "mon", "allow rw"
-    elif r == True and w == False and x == True:
-        return "mon", "allow rx"
-    elif r == True and w == False and x == False:
-        return "mon", "allow r"
-    elif r == False and w == True and x == True:
-        return "mon", "allow wx"
-    elif r == False and w == False and x == True:
-        return "mon", "allow x"
-    elif r == False and w == True and x == False:
-        return "mon", "allow w"
-    elif r == False and w == False and x == False:
-        return None
-
-def PilihCapsOsd(r,w,x):
-    if r == True and w ==True and x == True:
-        return "osd", "allow rwx"
-    elif r == True and w == True and x == False:
-        return "osd", "allow rw"
-    elif r == True and w == False and x == True:
-        return "osd", "allow rx"
-    elif r == True and w == False and x == False:
-        return "osd", "allow r"
-    elif r == False and w == True and x == True:
-        return "osd", "allow wx"
-    elif r == False and w == False and x == True:
-        return "osd", "allow x"
-    elif r == False and w == True and x == False:
-        return "osd", "allow w"
-    elif r == False and w == False and x == False:
-        return None 
-
-def PilihCapsMds(r,w,x):
-    if r == True and w ==True and x == True:
-        return "mds", "allow rwx"
-    elif r == True and w == True and x == False:
-        return "mds", "allow rw"
-    elif r == True and w == False and x == True:
-        return "mds", "allow rx"
-    elif r == True and w == False and x == False:
-        return "mds", "allow r"
-    elif r == False and w == True and x == True:
-        return "mds", "allow wx"
-    elif r == False and w == False and x == True:
-        return "mds", "allow x"
-    elif r == False and w == True and x == False:
-        return "mds", "allow w"
-    elif r == False and w == False and x == False:
-        return None    
 
 class BuatUser(Form):
     userID = StringField('userID')
@@ -141,19 +90,9 @@ def edituser(entity):
         return render_template('formedit.html', form=form, entity=entity)
 
 @app.route('/VolumeList',methods = ['GET','POST'])
-def addvolume():
-    req = requests.get('http://10.10.6.251:5000/api/v0.1/osd/pool/ls.json',headers=headers)
-    pools = json.loads(req.text)
-    r = requests.get('http://10.10.6.251:5000/api/v0.1/osd/pool/stats', params=pools.output,headers=headers)
-    form = BuatVolume(request.form)
-    if request.method == 'POST':
-        if form.validate() == False:
-            flash('Isi seluruhnya')
-            return render_template('addvolume.html', form=form)
-        else:
-            return render_template('success.html')
-    elif request.method == 'GET':
-        return render_template('addvolume.html', form=form)
+def volumelist():
+    r = requests.get('http://10.10.6.251:5000/api/v0.1/osd/pool/stats.json',headers=headers)
+    return render_template('addvolume.html', data=json.loads(r.text))
 
 @app.route('/LinkUserVolume')
 def linkuservolume():
@@ -161,9 +100,8 @@ def linkuservolume():
 
 @app.route('/latihanjson')
 def latihanjson():
-    req = requests.get('http://10.10.6.251:5000/api/v0.1/osd/pool/ls.json',headers=headers)
+    req = requests.get('http://10.10.6.251:5000/api/v0.1/osd/pool/stats.json',headers=headers)
     ketext = json.loads(req.text)
-
     return render_template('parsing_json.html', pools=ketext)
 
 if __name__=='__main__':
