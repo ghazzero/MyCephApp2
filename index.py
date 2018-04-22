@@ -34,9 +34,16 @@ class BuatUser(Form):
     MDSx   = BooleanField('execute')
     submit = SubmitField()
 
-class BuatVolume(Form):
-    poolID = IntegerField('PoolID')
-    capacity = IntegerField('capacity')
+class BuatPool(Form):
+    namaPool = StringField('Nama Pool')
+    PGnum = IntegerField('PG Number')
+    PGPnum = IntegerField('PGP Number')
+    submit = SubmitField()
+
+class BuatImage(Form):
+    namaPool = StringField('Nama Pool')
+    namaImage = StringField('Nama Image')
+    kapasitas = IntegerField('Kapasitas dalam GB')
     submit = SubmitField()
 
 @app.route('/')
@@ -92,7 +99,23 @@ def edituser(entity):
 @app.route('/VolumeList',methods = ['GET','POST'])
 def volumelist():
     r = requests.get('http://10.10.6.251:5000/api/v0.1/osd/pool/stats.json',headers=headers)
-    return render_template('addvolume.html', data=json.loads(r.text))
+    images = []
+    for data in json.loads(r.text)["output"]["pool_name"]:
+        images.append(list_image(data))
+    print images
+    return render_template('addvolume.html', data=json.loads(r.text),images=images)
+
+@app.route('/VolumeList/formpool', methods = ['GET','POST','PUT'])
+def formpool():
+    form = BuatPool(request.form)
+    if request.method == 'POST':
+	if form.validate() == False:
+	return render_template('formpool.html')
+        else: 
+	  request.put('http://10.10.6.251:5000/api/v0.1/osd/pool/create',headers=headers, params = {'pool':form.namaPool.data, 'pg_num':form.pgnum.data, 'pgp_num':form.pgpnum.data)
+    if request.method == 'GET' 
+    return render_template('formpool.html')	
+
 
 @app.route('/LinkUserVolume')
 def linkuservolume():
