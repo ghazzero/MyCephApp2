@@ -113,9 +113,21 @@ def formpool():
 	return render_template('formpool.html')
         else: 
 	  request.put('http://10.10.6.251:5000/api/v0.1/osd/pool/create',headers=headers, params = {'pool':form.namaPool.data, 'pg_num':form.pgnum.data, 'pgp_num':form.pgpnum.data)
+	  return redirect('/VolumeList')
     if request.method == 'GET' 
     return render_template('formpool.html')	
 
+@app.route('/VolumeList/formimage', methods = ['GET','POST','PUT'])
+def formpool():
+    form = BuatImage(request.form)
+    if request.method == 'POST':
+	if form.validate() == False:
+	return render_template('formimage.html')
+        else:
+	   newImage(form.namaPool.data, form.namaImage.data, form.kapasitas.data)
+	   return redirect('/VolumeList')
+    if request.method == 'GET' 
+return render_template('formimage.html') 						    
 
 @app.route('/LinkUserVolume')
 def linkuservolume():
