@@ -100,34 +100,36 @@ def edituser(entity):
 def volumelist():
     r = requests.get('http://10.10.6.251:5000/api/v0.1/osd/pool/stats.json',headers=headers)
     images = []
-    for data in json.loads(r.text)["output"]["pool_name"]:
-        images.append(list_image(data))
-    print images
+    pools = []
+    for lists in json.loads(r.text)["output"]:
+        pools.append(lists['pool_name'])
+    for pool in pools:
+        images.append(list_image(pool))
     return render_template('addvolume.html', data=json.loads(r.text),images=images)
 
 @app.route('/VolumeList/formpool', methods = ['GET','POST','PUT'])
 def formpool():
     form = BuatPool(request.form)
     if request.method == 'POST':
-	if form.validate() == False:
-	return render_template('formpool.html', form=form)
-        else: 
-	  request.put('http://10.10.6.251:5000/api/v0.1/osd/pool/create',headers=headers, params = {'pool':form.namaPool.data, 'pg_num':form.pgnum.data, 'pgp_num':form.pgpnum.data)
-	  return redirect('/VolumeList')
-    if request.method == 'GET' 
+        if form.validate() == False:
+            return render_template('formpool.html', form=form)
+        else:
+            request.put('http://10.10.6.251:5000/api/v0.1/osd/pool/create',headers=headers, params = {'pool':form.namaPool.data, 'pg_num':form.pgnum.data, 'pgp_num':form.pgpnum.data)
+	    return redirect('/VolumeList')
+    elif request.method == 'GET':
     return render_template('formpool.html', form=form)	
 
 @app.route('/VolumeList/formimage', methods = ['GET','POST','PUT'])
 def formpool():
     form = BuatImage(request.form)
     if request.method == 'POST':
-	if form.validate() == False:
-	return render_template('formimage.html' form=form)
+        if form.validate() == False:
+            return render_template('formimage.html', form=form)
         else:
-	   newImage(form.namaPool.data, form.namaImage.data, form.kapasitas.data)
-	   return redirect('/VolumeList')
-    if request.method == 'GET' 
-return render_template('formimage.html' form=form) 						    
+            newImage(form.namaPool.data, form.namaImage.data, form.kapasitas.data)
+            return redirect('/VolumeList')
+    if request.method == 'GET' :
+        return render_template('formimage.html', form=form)
 
 @app.route('/LinkUserVolume')
 def linkuservolume():
