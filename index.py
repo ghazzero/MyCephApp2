@@ -5,7 +5,7 @@ from flask_wtf import Form
 from wtforms import validators,StringField, IntegerField,SubmitField, BooleanField
 from flask_cors import CORS
 from blockdevice import PilihCapsMon, PilihCapsOsd, PilihCapsMds
-#from blockdevice import newImage, newPool, list_image
+from blockdevice import newImage, newPool, list_image
 
 
 app = Flask(__name__)
@@ -107,20 +107,21 @@ def volumelist():
         images.append(list_image(pool))
     return render_template('addvolume.html', data=json.loads(r.text),images=images)
 
-@app.route('/VolumeList/formpool', methods = ['GET','POST','PUT'])
+@app.route('/VolumeList/formpool',methods=['GET','POST','PUT'])
 def formpool():
     form = BuatPool(request.form)
     if request.method == 'POST':
         if form.validate() == False:
             return render_template('formpool.html', form=form)
+
         else:
-            request.put('http://10.10.6.251:5000/api/v0.1/osd/pool/create',headers=headers, params = {'pool':form.namaPool.data, 'pg_num':form.pgnum.data, 'pgp_num':form.pgpnum.data)
+            requests.put('http://10.10.6.251:5000/api/v0.1/osd/pool/create',headers=headers, params = {'pool':form.namaPool.data, 'pg_num':form.pgnum.data, 'pgp_num':form.pgpnum.data})
 	    return redirect('/VolumeList')
     elif request.method == 'GET':
-    return render_template('formpool.html', form=form)	
+   	 return render_template('formpool.html', form=form)	
 
-@app.route('/VolumeList/formimage', methods = ['GET','POST','PUT'])
-def formpool():
+@app.route('/VolumeList/formimage',methods=['GET','POST','PUT'])
+def formimage():
     form = BuatImage(request.form)
     if request.method == 'POST':
         if form.validate() == False:
