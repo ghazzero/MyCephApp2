@@ -132,6 +132,18 @@ def formimage():
     if request.method == 'GET' :
         return render_template('formimage.html', form=form)
 
+@app.route('/VolumeList/EditPool/<poolname:string'>
+def editpool():
+    form = BuatImage(request.form)
+    if request.method == 'POST':
+	if form.validate() == False:
+	    return render_template('formimage.html',form=form)
+	else:
+	    return a
+    elif request.method == 'GET':
+	return render_template('formimage.html')
+
+
 @app.route('/LinkUserVolume')
 def linkuservolume():
     return render_template('home.html')
