@@ -41,6 +41,8 @@
         <h1>
             Daftar pengguna
         </h1>
+ <a href="/AddUser/form"> <button class="tombol"> + </button></a>
+
         <ul class="list-group">
 
           <div class="table-responsive">
@@ -54,6 +56,7 @@
                   <th>MDS</th>
                     <th>EDIT</th>
                   <th>DEL</th>
+		  <th></th>
                 </tr>
               </thead>
                 <tbody>
@@ -68,6 +71,7 @@
                     <td>{{datum.caps.mds}}</td>
                     <td> <a href="/AddUser/EditUser/{{datum.entity}}"> Edit </a></td>
                     <td> <a href="/AddUser/DelUser/{{datum.entity}}"> Delete </a></td>
+		   <td> <a href="/KirimContohKeyring/{{datum.entity[7:]}}/{{datum.key}}" target="blank"><button class='btn btn-default'>Download keyring</button></a></td>
                 </tr>
                 {% endif %}
                 {% endif %}
@@ -75,10 +79,8 @@
         </tbody>
         </ul>
     <br>
-
+	{%endblock%}
     <a href="/AddUser/form"> <button class="tombol"> + </button></a>
-
-    {% endblock %}
 
 
 </body>
