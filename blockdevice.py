@@ -18,21 +18,21 @@ def PilihCapsMon(r,w,x):
     elif r == False and w == False and x == False:
         return None
 
-def PilihCapsOsd(r,w,x):
+def PilihCapsOsd(r,w,x,pool):
     if r == True and w ==True and x == True:
-        return "osd", "allow rwx"
+        return "osd", "allow rwx pool ={}".format(pool)
     elif r == True and w == True and x == False:
-        return "osd", "allow rw"
+        return "osd", "allow rw pool={}".format(pool)
     elif r == True and w == False and x == True:
-        return "osd", "allow rx"
+        return "osd", "allow rx pool ={}".format(pool)
     elif r == True and w == False and x == False:
-        return "osd", "allow r"
+        return "osd", "allow r pool={}".format(pool)
     elif r == False and w == True and x == True:
-        return "osd", "allow wx"
+        return "osd", "allow wx pool={}".format(pool)
     elif r == False and w == False and x == True:
-        return "osd", "allow x"
+        return "osd", "allow x pool={}".format(pool)
     elif r == False and w == True and x == False:
-        return "osd", "allow w"
+        return "osd", "allow w pool={}".format(pool)
     elif r == False and w == False and x == False:
         return None
 
@@ -65,6 +65,21 @@ def list_image(pool_name):
         cluster.shutdown()
     return listimage
 
+
+def image_info(pool_name,image_name):
+    cluster = rados.Rados(conffile='/etc/ceph/ceph.conf') 
+    cluster.connect()
+    try:
+        ioctx = cluster.open_ioctx(pool_name)
+        image = rbd.Image(ioctx,image_name )
+        try:
+           imagestat = image.stat()
+        finally:
+           image.close()
+    finally:
+        cluster.shutdown()
+    return imagestat
+
 def newPool(pool_name):
     cluster = rados.Rados(conffile='/etc/ceph/ceph.conf')
     cluster.connect()
@@ -83,10 +98,38 @@ def newImage(pool_name, image_name, size_in_gb):
             rbd_inst = rbd.RBD()
             size = size_in_gb * 1024**3  # 4 GiB
             rbd_inst.create(ioctx, image_name, size)
-            image.close()
         finally:
             ioctx.close()
     finally:
+        cluster.shutdown()
+    return None
+
+def deleteImage(pool_name,image_name):
+    cluster = rados.Rados(conffile='/etc/ceph/ceph.conf')
+    cluster.connect()
+    try:
+        ioctx = cluster.open_ioctx(pool_name)
+        try:
+            rbd_inst=rbd.RBD()
+	    rbd_inst.remove(ioctx,image_name)
+        finally:
+            ioctx.close()
+    finally:
+        cluster.shutdown()
+    return None
+
+def editImage(pool_name,image_name, size):
+    cluster = rados.Rados(conffile='/etc/ceph/ceph.conf')
+    cluster.connect()
+    try:
+        ioctx = cluster.open_ioctx(pool_name)
+        try:
+            image = rbd.Image(ioctx,image_name)
+            image.resize(size*1024**3)
+        finally:
+	    image.close()
+    finally:
+	ioctx.close()
         cluster.shutdown()
     return None
 
